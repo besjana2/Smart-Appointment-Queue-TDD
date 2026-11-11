@@ -1,49 +1,43 @@
 # Smart Appointment and Queue Management System
 
-**Studentja (projekt individual):** Besjana Kurtaj  
+**Studentja:** Besjana Kurtaj  
 **Lënda:** Test Driven Development (TDD) — Java 1  
-**Statusi:** Projekt fillestar / detyra e javës së parë
+**Repository:** https://github.com/besjana2/Smart-Appointment-Queue-TDD
 
 ## Përshkrimi
-Aplikacion për rezervimin dhe anulimin e termineve, shmangien e rezervimeve të dyfishta dhe menaxhimin e radhës së pritjes për një shërbim (p.sh. klinikë ose sportel).
+Aplikacion për rezervimin dhe anulimin e termineve dhe për lëshimin e numrave të radhës, me synim uljen e pritjeve dhe shmangien e rezervimeve të dyfishta. Versioni i javës së parë është një shërbim i thjeshtë në memorie, jo sistem web i përfunduar.
 
 ## Qëllimi
-Të zvogëlohet pritja dhe konfuzioni në menaxhimin e termineve përmes një sistemi të thjeshtë, të testueshëm dhe të zgjerueshëm.
+Të organizojë në mënyrë më të qartë takimet dhe radhët për institucione, klinika, zyra shërbimi dhe klientët e tyre.
 
-## Teknologjitë e planifikuara
-- **C# / .NET 8** për logjikën bazë
-- **xUnit** për teste automatike (ekuivalent i JUnit 5 në ekosistemin .NET)
-- **Git / GitHub** për versionim
-- **ASP.NET Core** dhe një databazë (p.sh. SQLite) në fazat e ardhshme
+## Teknologjitë
+- Java 17
+- Maven
+- JUnit 5 (junit-jupiter)
 
-**Vërejtje akademike:** Udhëzimi origjinal për javën 1 specifikon **JUnit 5 (Java)**. Ky repository përdor **xUnit (C#)** sipas teknologjisë së zgjedhur dhe kërkon miratimin e profesoreshës.
+## Tri funksionalitetet dhe testet
+1. **Rezervim termini:** rezervim i një orari të lirë; refuzim i orarit të zënë dhe emrit bosh.
+2. **Anulim termini:** anulim i një rezervimi ekzistues; rezultat `false` nëse nuk gjendet.
+3. **Numra radhe:** numri i parë është 1; çdo kërkesë e re e rrit numrin.
 
-## Tri funksionalitetet e testuara
-1. Rezervimi i terminit: termin i lirë dhe refuzim i rezervimit të dyfishtë.
-2. Anulimi i terminit: anulim i suksesshëm dhe refuzim i ID-së së panjohur.
-3. Menaxhimi i radhës: numra rendorë të njëpasnjëshëm dhe refuzim i emrit bosh.
+Ka **7 teste JUnit 5** në `src/test/java/com/besjana/appointment/AppointmentServiceTest.java`.
 
-## Struktura
-```
-Smart_Appointment_Queue_TDD/
-├── README.md
-├── .gitignore
-├── src/SmartAppointmentQueue/SmartAppointmentQueue.csproj
-├── src/SmartAppointmentQueue/AppointmentQueueService.cs
-├── tests/SmartAppointmentQueue.Tests/SmartAppointmentQueue.Tests.csproj
-├── tests/SmartAppointmentQueue.Tests/AppointmentQueueServiceTests.cs
-└── docs/Raporti_Java_1.docx
-```
+## Si të ekzekutohen
+Instaloni JDK 17+ dhe Maven 3.9+; nga rrënja e projektit:
 
-## GitHub repository
-Pas krijimit të repository-t në GitHub, vendosni këtu URL-në e tij. Emri i sugjeruar: `Smart-Appointment-Queue-TDD`.
-
-## Ekzekutimi i testeve
-Kërkohet .NET 8 SDK. Nga dosja kryesore:
 ```bash
-dotnet test tests/SmartAppointmentQueue.Tests/SmartAppointmentQueue.Tests.csproj
+mvn test
 ```
-Testet **nuk janë ekzekutuar në mjedisin e përgatitjes**; ekzekutojini lokalisht dhe shtoni screenshot-in e rezultatit në raport para dorëzimit.
+
+Maven gjeneron rezultatet në `target/surefire-reports/`. Bëni screenshot ose kopjoni përmbledhjen e testeve në raport pas ekzekutimit.
+
+**Status:** Testet janë përgatitur, por nuk janë ekzekutuar në këtë mjedis; rezultati duhet verifikuar lokalisht.
 
 ## Metoda TDD
-Red: shkruhen testet para implementimit → Green: implementim minimal për t'i kaluar → Refactor: përmirësim i kodit duke mbajtur testet funksionale.
+Për secilin rast: shkruaj testin që dështon (**Red**), implemento kodin minimal që e kalon (**Green**), dhe përmirëso strukturën pa ndryshuar sjelljen (**Refactor**).
+
+## Struktura
+- `pom.xml` — varësitë Maven / JUnit 5
+- `src/main/java/.../AppointmentService.java` — funksionalitetet fillestare
+- `src/test/java/.../AppointmentServiceTest.java` — testet
+- `docs/` — raporti i javës së parë

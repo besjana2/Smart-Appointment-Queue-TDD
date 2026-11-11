@@ -1,7 +1,5 @@
-bin/
-obj/
-.vs/
+target/
+.idea/
 .vscode/
-*.user
-TestResults/
-.DS_Store
+*.class
+*.log
