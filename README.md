@@ -1,43 +1,35 @@
 # Smart Appointment and Queue Management System
 
 **Studentja:** Besjana Kurtaj  
-**Lënda:** Test Driven Development (TDD) — Java 1  
+**Lënda:** Test Driven Development (TDD) — Java 3  
 **Repository:** https://github.com/besjana2/Smart-Appointment-Queue-TDD
 
 ## Përshkrimi
-Aplikacion për rezervimin dhe anulimin e termineve dhe për lëshimin e numrave të radhës, me synim uljen e pritjeve dhe shmangien e rezervimeve të dyfishta. Versioni i javës së parë është një shërbim i thjeshtë në memorie, jo sistem web i përfunduar.
+Projekt individual për rezervim dhe anulim të termineve dhe gjenerim të numrave të radhës për klinika, sportele dhe qendra shërbimi. Versioni aktual është logjikë në memorie, pa databazë dhe pa ndërfaqe grafike.
 
-## Qëllimi
-Të organizojë në mënyrë më të qartë takimet dhe radhët për institucione, klinika, zyra shërbimi dhe klientët e tyre.
+## Funksionalitetet
+- Rezervim i terminit vetëm kur orari është i lirë; validim i orarit (`yyyy-MM-dd HH:mm`), emrit (2–50 karaktere), orëve 08:00–17:30 dhe intervalit 30-minutësh.
+- Anulim i rezervimeve ekzistuese; për rezervime të panjohura kthehet `false`.
+- Numra unikë të radhës duke filluar nga 1; kufi maksimal i konfigurueshëm (100 si parazgjedhje).
+- Kontroll i rezervimeve dhe numërim i termineve aktive.
 
 ## Teknologjitë
-- Java 17
-- Maven
-- JUnit 5 (junit-jupiter)
+Java 17, Maven, JUnit 5 (Jupiter, @ParameterizedTest).
 
-## Tri funksionalitetet dhe testet
-1. **Rezervim termini:** rezervim i një orari të lirë; refuzim i orarit të zënë dhe emrit bosh.
-2. **Anulim termini:** anulim i një rezervimi ekzistues; rezultat `false` nëse nuk gjendet.
-3. **Numra radhe:** numri i parë është 1; çdo kërkesë e re e rrit numrin.
-
-Ka **7 teste JUnit 5** në `src/test/java/com/besjana/appointment/AppointmentServiceTest.java`.
-
-## Si të ekzekutohen
-Instaloni JDK 17+ dhe Maven 3.9+; nga rrënja e projektit:
-
+## Ekzekutimi
+Kërkohet JDK 17+ dhe Maven 3.8+.
 ```bash
-mvn test
+mvn clean test
 ```
+Rezultatet e ekzekutimit gjenden te `target/surefire-reports/`.
 
-Maven gjeneron rezultatet në `target/surefire-reports/`. Bëni screenshot ose kopjoni përmbledhjen e testeve në raport pas ekzekutimit.
+## Testimi i javës së tretë
+Testet përfshijnë raste pozitive/negative, vlera kufitare, degë `if/else`, dhe teste të parametrizuara me `@ValueSource`/`@CsvSource`. Shihni `src/test/java/com/besjana/appointment/AppointmentServiceTest.java`.
 
-**Status:** Testet janë përgatitur, por nuk janë ekzekutuar në këtë mjedis; rezultati duhet verifikuar lokalisht.
-
-## Metoda TDD
-Për secilin rast: shkruaj testin që dështon (**Red**), implemento kodin minimal që e kalon (**Green**), dhe përmirëso strukturën pa ndryshuar sjelljen (**Refactor**).
+## TDD / RED–GREEN–REFACTOR
+Shihni `docs/TDD_Evidence_Instructions.md` për hapa konkretë të demonstrimit. **Commit-et RED/GREEN/REFACTOR duhet të realizohen vërtet në GitHub**; raporti nuk pretendon se commit-et janë kryer.
 
 ## Struktura
-- `pom.xml` — varësitë Maven / JUnit 5
-- `src/main/java/.../AppointmentService.java` — funksionalitetet fillestare
-- `src/test/java/.../AppointmentServiceTest.java` — testet
-- `docs/` — raporti i javës së parë
+- `src/main/java/.../AppointmentService.java`: logjika kryesore
+- `src/test/java/.../AppointmentServiceTest.java`: testet JUnit 5
+- `docs/`: raporti i javës së tretë dhe udhëzimet TDD

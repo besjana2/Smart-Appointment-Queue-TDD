@@ -2,54 +2,111 @@ package com.besjana.appointment;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppointmentServiceTest {
     private AppointmentService service;
+    private static final String SLOT = "2026-11-19 10:00";
 
     @BeforeEach
     void setUp() { service = new AppointmentService(); }
 
-    // Functionality 1: booking
+    // Positive testing: valid booking and the earliest/latest allowed slots.
     @Test
-    void bookAppointment_acceptsFreeSlot() {
-        assertTrue(service.bookAppointment("2026-11-12 10:00", "Besjana"));
+    void booking_succeedsForAvailableSlot() {
+        assertTrue(service.bookAppointment(SLOT, "Besjana"));
+        assertTrue(service.isSlotBooked(SLOT));
+        assertEquals(1, service.getBookingCount());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"2026-11-19 08:00", "2026-11-19 17:30"})
+    void booking_acceptsOpeningAndClosingBoundary(String slot) {
+        assertTrue(service.bookAppointment(slot, "Besjana"));
     }
 
     @Test
-    void bookAppointment_rejectsAlreadyBookedSlot() {
-        assertTrue(service.bookAppointment("2026-11-12 10:00", "Besjana"));
-        assertFalse(service.bookAppointment("2026-11-12 10:00", "Arta"));
+    void booking_rejectsDoubleBookingAndPreservesExistingBooking() {
+        assertTrue(service.bookAppointment(SLOT, "Besjana"));
+        assertFalse(service.bookAppointment(SLOT, "Altin"));
+        assertEquals(1, service.getBookingCount());
+    }
+
+    // Negative, boundary, and parameterized tests.
+    @ParameterizedTest
+    @ValueSource(strings = {"", " ", "A", "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXY"})
+    void booking_rejectsInvalidCustomerNames(String name) {
+        assertThrows(IllegalArgumentException.class, () -> service.bookAppointment(SLOT, name));
     }
 
     @Test
-    void bookAppointment_rejectsBlankCustomer() {
-        assertThrows(IllegalArgumentException.class, () -> service.bookAppointment("2026-11-12 11:00", " "));
+    void booking_rejectsNullCustomer() {
+        assertThrows(IllegalArgumentException.class, () -> service.bookAppointment(SLOT, null));
     }
 
-    // Functionality 2: cancellation
-    @Test
-    void cancelAppointment_removesExistingBooking() {
-        service.bookAppointment("2026-11-12 10:00", "Besjana");
-        assertTrue(service.cancelAppointment("2026-11-12 10:00"));
-        assertTrue(service.bookAppointment("2026-11-12 10:00", "Arta"));
-    }
-
-    @Test
-    void cancelAppointment_returnsFalseForUnknownSlot() {
-        assertFalse(service.cancelAppointment("2026-11-12 15:00"));
-    }
-
-    // Functionality 3: queue numbers
-    @Test
-    void issueQueueNumber_startsAtOne() {
-        assertEquals(1, service.issueQueueNumber());
+    @ParameterizedTest
+    @ValueSource(strings = {"2026-11-19 07:30", "2026-11-19 18:00", "2026-11-19 08:15", "invalid", "2026-02-30 10:00"})
+    void booking_rejectsInvalidSlots(String slot) {
+        assertThrows(IllegalArgumentException.class, () -> service.bookAppointment(slot, "Besjana"));
     }
 
     @Test
-    void issueQueueNumber_increments() {
+    void booking_rejectsNullAndBlankSlots() {
+        assertThrows(IllegalArgumentException.class, () -> service.bookAppointment(null, "Besjana"));
+        assertThrows(IllegalArgumentException.class, () -> service.bookAppointment(" ", "Besjana"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"AB, true", "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWX, true"})
+    void booking_acceptsMinimumAndMaximumNameLength(String name, boolean expected) {
+        assertEquals(expected, service.bookAppointment(SLOT, name));
+    }
+
+    @Test
+    void cancellation_removesExistingBookingAndFreesSlot() {
+        service.bookAppointment(SLOT, "Besjana");
+        assertTrue(service.cancelAppointment(SLOT));
+        assertFalse(service.isSlotBooked(SLOT));
+        assertEquals(0, service.getBookingCount());
+        assertTrue(service.bookAppointment(SLOT, "Altin"));
+    }
+
+    @Test
+    void cancellation_returnsFalseWhenBookingDoesNotExist() {
+        assertFalse(service.cancelAppointment(SLOT));
+    }
+
+    @Test
+    void cancellation_rejectsInvalidSlot() {
+        assertThrows(IllegalArgumentException.class, () -> service.cancelAppointment("bad input"));
+    }
+
+    @Test
+    void query_rejectsInvalidSlot() {
+        assertThrows(IllegalArgumentException.class, () -> service.isSlotBooked(null));
+    }
+
+    @Test
+    void queue_startsAtOneAndIncrements() {
         assertEquals(1, service.issueQueueNumber());
         assertEquals(2, service.issueQueueNumber());
         assertEquals(3, service.issueQueueNumber());
+    }
+
+    @Test
+    void queue_acceptsFinalTicketAndRejectsBeyondMaximum() {
+        AppointmentService smallQueue = new AppointmentService(2);
+        assertEquals(1, smallQueue.issueQueueNumber());
+        assertEquals(2, smallQueue.issueQueueNumber());
+        assertThrows(IllegalStateException.class, smallQueue::issueQueueNumber);
+    }
+
+    @Test
+    void queue_rejectsZeroAndNegativeCapacity() {
+        assertThrows(IllegalArgumentException.class, () -> new AppointmentService(0));
+        assertThrows(IllegalArgumentException.class, () -> new AppointmentService(-1));
     }
 }
