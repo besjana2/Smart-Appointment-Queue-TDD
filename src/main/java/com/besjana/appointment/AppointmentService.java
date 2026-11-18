@@ -20,6 +20,7 @@ public class AppointmentService {
                     .parseDefaulting(ChronoField.ERA, IsoEra.CE.getValue())
                     .toFormatter()
                     .withResolverStyle(ResolverStyle.STRICT);
+    private static final int MIN_CUSTOMER_LENGTH = 2;
     private static final int MAX_CUSTOMER_LENGTH = 50;
     private final Map<String, String> appointments = new HashMap<>();
     private final int maxQueueNumber;
@@ -71,8 +72,9 @@ public class AppointmentService {
         String strippedName = customerName == null ? "" : customerName.strip();
         String name = Normalizer.normalize(strippedName, Normalizer.Form.NFC);
         int nameLength = name.codePointCount(0, name.length());
-        if (nameLength < 2 || nameLength > MAX_CUSTOMER_LENGTH) {
-            throw new IllegalArgumentException("Customer name must have 2 to 50 characters");
+        if (nameLength < MIN_CUSTOMER_LENGTH || nameLength > MAX_CUSTOMER_LENGTH) {
+            throw new IllegalArgumentException(
+                    "Customer name must have " + MIN_CUSTOMER_LENGTH + " to " + MAX_CUSTOMER_LENGTH + " characters");
         }
         return name;
     }
