@@ -14,6 +14,14 @@ class AppointmentServiceTest {
     @BeforeEach
     void setUp() { service = new AppointmentService(); }
 
+    @Test
+    void booking_rejectsSingleLetterNameOutsideTheBasicMultilingualPlane() {
+        String name = new String(Character.toChars(0x10400));
+
+        assertThrows(IllegalArgumentException.class, () -> service.bookAppointment(SLOT, name));
+        assertFalse(service.isSlotBooked(SLOT));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"+10000-11-19 10:00", "-0001-11-19 10:00"})
     void booking_rejectsYearsOutsideTheFourDigitSlotFormat(String slot) {
