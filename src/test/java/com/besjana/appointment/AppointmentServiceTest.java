@@ -15,6 +15,13 @@ class AppointmentServiceTest {
     void setUp() { service = new AppointmentService(); }
 
     @Test
+    void booking_rejectsSingleLetterNameWithCombiningAccent() {
+        assertThrows(IllegalArgumentException.class,
+                () -> service.bookAppointment(SLOT, "e\u0301"));
+        assertEquals(0, service.getBookingCount());
+    }
+
+    @Test
     void booking_rejectsYearZero() {
         assertThrows(IllegalArgumentException.class,
                 () -> service.bookAppointment("0000-11-19 10:00", "Besjana"));
