@@ -2,15 +2,21 @@ package com.besjana.appointment;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.time.temporal.ChronoField;
 import java.util.HashMap;
 import java.util.Map;
 
 /** In-memory appointment booking and queue management for the TDD coursework. */
 public class AppointmentService {
     private static final DateTimeFormatter SLOT_FORMAT =
-            DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm").withResolverStyle(ResolverStyle.STRICT);
+            new DateTimeFormatterBuilder()
+                    .appendValue(ChronoField.YEAR, 4)
+                    .appendPattern("-MM-dd HH:mm")
+                    .toFormatter()
+                    .withResolverStyle(ResolverStyle.STRICT);
     private static final int MAX_CUSTOMER_LENGTH = 50;
     private final Map<String, String> appointments = new HashMap<>();
     private final int maxQueueNumber;
@@ -66,9 +72,6 @@ public class AppointmentService {
             throw new IllegalArgumentException("Time slot is required");
         }
         String slot = timeSlot.strip();
-        if (slot.startsWith("+") || slot.startsWith("-")) {
-            throw new IllegalArgumentException("Time slot format must be yyyy-MM-dd HH:mm");
-        }
         final LocalDateTime value;
         try {
             value = LocalDateTime.parse(slot, SLOT_FORMAT);
