@@ -15,6 +15,14 @@ class AppointmentServiceTest {
     void setUp() { service = new AppointmentService(); }
 
     @Test
+    void booking_rejectsSingleLetterNameSurroundedByUnicodeSpaces() {
+        String name = "\u2003A\u2003";
+
+        assertThrows(IllegalArgumentException.class, () -> service.bookAppointment(SLOT, name));
+        assertFalse(service.isSlotBooked(SLOT));
+    }
+
+    @Test
     void booking_usesTheSameSlotWithOrWithoutSurroundingSpaces() {
         String paddedSlot = " " + SLOT + " ";
 
