@@ -51,7 +51,7 @@ class AppointmentServiceTest {
     @Test
     void booking_rejectsDoubleBookingAndPreservesExistingBooking() {
         assertTrue(service.bookAppointment(SLOT, "Besjana"));
-        assertFalse(service.bookAppointment(SLOT, "Altin"));
+        assertFalse(service.bookAppointment(SLOT, "BesjanaK"));
         assertEquals(1, service.getBookingCount());
     }
 
@@ -72,7 +72,6 @@ class AppointmentServiceTest {
     void booking_rejectsInvalidSlots(String slot) {
         assertThrows(IllegalArgumentException.class, () -> service.bookAppointment(slot, "Besjana"));
     }
-
     @Test
     void booking_rejectsNullAndBlankSlots() {
         assertThrows(IllegalArgumentException.class, () -> service.bookAppointment(null, "Besjana"));
@@ -91,7 +90,7 @@ class AppointmentServiceTest {
         assertTrue(service.cancelAppointment(SLOT));
         assertFalse(service.isSlotBooked(SLOT));
         assertEquals(0, service.getBookingCount());
-        assertTrue(service.bookAppointment(SLOT, "Altin"));
+        assertTrue(service.bookAppointment(SLOT, "BesjanaK"));
     }
 
     @Test
