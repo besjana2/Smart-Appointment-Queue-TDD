@@ -36,7 +36,8 @@ public class AppointmentService {
     public boolean bookAppointment(String timeSlot, String customerName) {
         String slot = normalizeAndValidateSlot(timeSlot);
         String name = customerName == null ? "" : customerName.strip();
-        if (name.length() < 2 || name.length() > MAX_CUSTOMER_LENGTH) {
+        int nameLength = name.codePointCount(0, name.length());
+        if (nameLength < 2 || nameLength > MAX_CUSTOMER_LENGTH) {
             throw new IllegalArgumentException("Customer name must have 2 to 50 characters");
         }
         if (appointments.containsKey(slot)) {
