@@ -14,6 +14,18 @@ class AppointmentServiceTest {
     @BeforeEach
     void setUp() { service = new AppointmentService(); }
 
+    @Test
+    void booking_usesTheSameSlotWithOrWithoutSurroundingSpaces() {
+        String paddedSlot = " " + SLOT + " ";
+
+        assertTrue(service.bookAppointment(paddedSlot, "Besjana"));
+        assertTrue(service.isSlotBooked(SLOT));
+        assertTrue(service.isSlotBooked(paddedSlot));
+        assertFalse(service.bookAppointment(SLOT, "BesjanaK"));
+        assertTrue(service.cancelAppointment(paddedSlot));
+        assertFalse(service.isSlotBooked(SLOT));
+    }
+
     // Positive testing: valid booking and the earliest/latest allowed slots.
     @Test
     void booking_succeedsForAvailableSlot() {
