@@ -35,11 +35,7 @@ public class AppointmentService {
     /** Book on a half-hour boundary during 08:00–17:30 (inclusive). */
     public boolean bookAppointment(String timeSlot, String customerName) {
         String slot = normalizeAndValidateSlot(timeSlot);
-        String name = customerName == null ? "" : customerName.strip();
-        int nameLength = name.codePointCount(0, name.length());
-        if (nameLength < 2 || nameLength > MAX_CUSTOMER_LENGTH) {
-            throw new IllegalArgumentException("Customer name must have 2 to 50 characters");
-        }
+        String name = normalizeAndValidateCustomerName(customerName);
         if (appointments.containsKey(slot)) {
             return false;
         }
@@ -67,6 +63,15 @@ public class AppointmentService {
     }
 
     public int getBookingCount() { return appointments.size(); }
+
+    private static String normalizeAndValidateCustomerName(String customerName) {
+        String name = customerName == null ? "" : customerName.strip();
+        int nameLength = name.codePointCount(0, name.length());
+        if (nameLength < 2 || nameLength > MAX_CUSTOMER_LENGTH) {
+            throw new IllegalArgumentException("Customer name must have 2 to 50 characters");
+        }
+        return name;
+    }
 
     private static String normalizeAndValidateSlot(String timeSlot) {
         if (timeSlot == null || timeSlot.isBlank()) {
