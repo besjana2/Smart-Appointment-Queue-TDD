@@ -29,15 +29,14 @@ public class AppointmentService {
     /** Book on a half-hour boundary during 08:00–17:30 (inclusive). */
     public boolean bookAppointment(String timeSlot, String customerName) {
         String slot = normalizeAndValidateSlot(timeSlot);
-        if (customerName == null || customerName.isBlank()
-                || customerName.strip().length() < 2
-                || customerName.strip().length() > MAX_CUSTOMER_LENGTH) {
+        String name = customerName == null ? "" : customerName.strip();
+        if (name.length() < 2 || name.length() > MAX_CUSTOMER_LENGTH) {
             throw new IllegalArgumentException("Customer name must have 2 to 50 characters");
         }
         if (appointments.containsKey(slot)) {
             return false;
         }
-        appointments.put(slot, customerName.strip());
+        appointments.put(slot, name);
         return true;
     }
 
