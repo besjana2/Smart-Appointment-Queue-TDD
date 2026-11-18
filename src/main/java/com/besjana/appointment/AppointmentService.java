@@ -1,6 +1,7 @@
 package com.besjana.appointment;
 
 import java.time.LocalDateTime;
+import java.time.chrono.IsoEra;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
@@ -13,8 +14,9 @@ import java.util.Map;
 public class AppointmentService {
     private static final DateTimeFormatter SLOT_FORMAT =
             new DateTimeFormatterBuilder()
-                    .appendValue(ChronoField.YEAR, 4)
+                    .appendValue(ChronoField.YEAR_OF_ERA, 4)
                     .appendPattern("-MM-dd HH:mm")
+                    .parseDefaulting(ChronoField.ERA, IsoEra.CE.getValue())
                     .toFormatter()
                     .withResolverStyle(ResolverStyle.STRICT);
     private static final int MAX_CUSTOMER_LENGTH = 50;
@@ -83,9 +85,6 @@ public class AppointmentService {
             value = LocalDateTime.parse(slot, SLOT_FORMAT);
         } catch (DateTimeParseException ex) {
             throw new IllegalArgumentException("Time slot format must be yyyy-MM-dd HH:mm", ex);
-        }
-        if (value.getYear() == 0) {
-            throw new IllegalArgumentException("Time slot format must be yyyy-MM-dd HH:mm");
         }
         int minutes = value.getHour() * 60 + value.getMinute();
         if (minutes < 8 * 60 || minutes > 17 * 60 + 30 || value.getMinute() % 30 != 0) {
