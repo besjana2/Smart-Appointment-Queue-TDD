@@ -1,5 +1,6 @@
 package com.besjana.appointment;
 
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.time.chrono.IsoEra;
 import java.time.format.DateTimeFormatter;
@@ -67,7 +68,8 @@ public class AppointmentService {
     public int getBookingCount() { return appointments.size(); }
 
     private static String normalizeAndValidateCustomerName(String customerName) {
-        String name = customerName == null ? "" : customerName.strip();
+        String strippedName = customerName == null ? "" : customerName.strip();
+        String name = Normalizer.normalize(strippedName, Normalizer.Form.NFC);
         int nameLength = name.codePointCount(0, name.length());
         if (nameLength < 2 || nameLength > MAX_CUSTOMER_LENGTH) {
             throw new IllegalArgumentException("Customer name must have 2 to 50 characters");
