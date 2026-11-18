@@ -28,23 +28,25 @@ public class AppointmentService {
 
     /** Book on a half-hour boundary during 08:00–17:30 (inclusive). */
     public boolean bookAppointment(String timeSlot, String customerName) {
-        validateSlot(timeSlot);
+        String slot = timeSlot == null ? null : timeSlot.strip();
+        validateSlot(slot);
         if (customerName == null || customerName.isBlank()
                 || customerName.trim().length() < 2
                 || customerName.trim().length() > MAX_CUSTOMER_LENGTH) {
             throw new IllegalArgumentException("Customer name must have 2 to 50 characters");
         }
-        if (appointments.containsKey(timeSlot)) {
+        if (appointments.containsKey(slot)) {
             return false;
         }
-        appointments.put(timeSlot, customerName.trim());
+        appointments.put(slot, customerName.trim());
         return true;
     }
 
     /** Cancel a known booking; returns false when the time slot is free. */
     public boolean cancelAppointment(String timeSlot) {
-        validateSlot(timeSlot);
-        return appointments.remove(timeSlot) != null;
+        String slot = timeSlot == null ? null : timeSlot.strip();
+        validateSlot(slot);
+        return appointments.remove(slot) != null;
     }
 
     /** Issue a unique ticket; refuse tickets after the configured queue limit. */
@@ -56,8 +58,9 @@ public class AppointmentService {
     }
 
     public boolean isSlotBooked(String timeSlot) {
-        validateSlot(timeSlot);
-        return appointments.containsKey(timeSlot);
+        String slot = timeSlot == null ? null : timeSlot.strip();
+        validateSlot(slot);
+        return appointments.containsKey(slot);
     }
 
     public int getBookingCount() { return appointments.size(); }
