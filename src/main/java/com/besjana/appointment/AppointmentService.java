@@ -66,6 +66,9 @@ public class AppointmentService {
             throw new IllegalArgumentException("Time slot is required");
         }
         String slot = timeSlot.strip();
+        if (slot.startsWith("+") || slot.startsWith("-")) {
+            throw new IllegalArgumentException("Time slot format must be yyyy-MM-dd HH:mm");
+        }
         final LocalDateTime value;
         try {
             value = LocalDateTime.parse(slot, SLOT_FORMAT);
