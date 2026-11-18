@@ -84,6 +84,9 @@ public class AppointmentService {
         } catch (DateTimeParseException ex) {
             throw new IllegalArgumentException("Time slot format must be yyyy-MM-dd HH:mm", ex);
         }
+        if (value.getYear() == 0) {
+            throw new IllegalArgumentException("Time slot format must be yyyy-MM-dd HH:mm");
+        }
         int minutes = value.getHour() * 60 + value.getMinute();
         if (minutes < 8 * 60 || minutes > 17 * 60 + 30 || value.getMinute() % 30 != 0) {
             throw new IllegalArgumentException("Appointments must be at half-hour slots from 08:00 to 17:30");
