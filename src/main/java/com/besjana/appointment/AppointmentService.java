@@ -30,14 +30,14 @@ public class AppointmentService {
     public boolean bookAppointment(String timeSlot, String customerName) {
         String slot = normalizeAndValidateSlot(timeSlot);
         if (customerName == null || customerName.isBlank()
-                || customerName.trim().length() < 2
-                || customerName.trim().length() > MAX_CUSTOMER_LENGTH) {
+                || customerName.strip().length() < 2
+                || customerName.strip().length() > MAX_CUSTOMER_LENGTH) {
             throw new IllegalArgumentException("Customer name must have 2 to 50 characters");
         }
         if (appointments.containsKey(slot)) {
             return false;
         }
-        appointments.put(slot, customerName.trim());
+        appointments.put(slot, customerName.strip());
         return true;
     }
 
